@@ -3,7 +3,7 @@ var bs58checkBase = require('bs58check/base')
 var Buffer = require('safe-buffer').Buffer
 
 function getBs58check (network) {
-  if(network.hashFunctions.address) {
+  if(network && network.hashFunctions && network.hashFunctions.address) {
     return bs58checkBase(network.hashFunctions.address);
   }
   return bs58check;
