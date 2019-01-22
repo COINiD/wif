@@ -1,5 +1,13 @@
 var bs58check = require('bs58check')
+var bs58checkBase = require('bs58check/base')
 var Buffer = require('safe-buffer').Buffer
+
+function getBs58check (network) {
+  if(network.hashFunctions.address) {
+    return bs58checkBase(network.hashFunctions.address);
+  }
+  return bs58check;
+}
 
 function decodeRaw (buffer, version) {
   // check version only if defined
@@ -41,14 +49,14 @@ function encodeRaw (version, privateKey, compressed) {
   return result
 }
 
-function decode (string, version) {
-  return decodeRaw(bs58check.decode(string), version)
+function decode (string, version, network) {
+  return decodeRaw(getBs58check(network).decode(string), version)
 }
 
-function encode (version, privateKey, compressed) {
-  if (typeof version === 'number') return bs58check.encode(encodeRaw(version, privateKey, compressed))
+function encode (version, privateKey, compressed, network) {
+  if (typeof version === 'number') return getBs58check(network).encode(encodeRaw(version, privateKey, compressed))
 
-  return bs58check.encode(
+  return getBs58check(network).encode(
     encodeRaw(
       version.version,
       version.privateKey,
